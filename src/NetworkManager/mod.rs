@@ -17,7 +17,7 @@ use std::io::Write;
 ///
 pub fn SendCode(questionNumber: i32, language: &str, code: &str)
 {
-    let mut stream = TcpStream::connect("127.0.0.1:7878").expect("Can not connect judge server");
+    let mut stream = TcpStream::connect("222.237.120.237:5000").unwrap();//expect("Can not connect judge server");
 
     let data = format!("<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><question_number>{}</question_number><language>{}</language><code_size>{}</code_size></root>",questionNumber, language, code.len());
 
