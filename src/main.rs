@@ -3,7 +3,7 @@
 #[macro_use] extern crate rocket;
 
 use rocket::http::RawStr;
-use rocket::response::content;
+use rocket::response::{content, Redirect};
 use IROOJ_Frontend::*;
 
 #[get("/")]
@@ -12,17 +12,22 @@ fn index() -> content::Html<String> {
     return content::Html(s);
 }
 
-#[get("/list")]
-pub fn list() -> & 'static str {
-    "Problem list"
+#[get("/test/problem?<code>")]
+fn test_problem_code(code:Option<String>) -> content::Html<String> {
+    if code.is_none()
+    {
+        let mut s = FileManager::ReadHTMLFile("HTML/test/problem.html");
+        return content::Html(s);
+    }
+    else
+    {
+        let codestr = if let Some(String) = code {String};
+        NetworkManager::SendCode(1,"C",&codestr[..]);
+        let mut s = FileManager::ReadHTMLFile("HTML/index/index.html");
+        return content::Html(s);
+    }
 }
-
-#[get("/user/<name>")]
-fn user(name: &RawStr) -> String {
-    format!("Hello, {}!", name.as_str())
-}
-
 
 fn main() {
-    rocket::ignite().mount("/", routes![index, list, user]).launch();
+    rocket::ignite().mount("/", routes![index, test_problem_code]).launch();
 }
