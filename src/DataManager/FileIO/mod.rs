@@ -5,11 +5,11 @@ use std::io::prelude::*;
 ///
 /// # Example
 /// ```
-/// let mut s = FileManager::ReadHTMLFile("HTML/index/index.html");
+/// let mut s = DataManager::FileIO::ReadHTMLFile("HTML/index/index.html");
 /// ```
 /// # Panics
 /// * **Can not open HTML file** : 경로에 맞는 HTML 파일이 존재하지 않아 열 수 없습니다.
-/// * **Can not read HTML file** : HTML파일을 찾았으나 문제가 생겨서 String으로 읽어낼 수 없습니다.
+/// * **Can not read HTML file** : HTML파일을 찾았으나 String으로 읽어낼 수 없습니다.
 ///
 pub fn ReadHTMLFile(path: &str) -> String
 {

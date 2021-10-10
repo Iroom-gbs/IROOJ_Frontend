@@ -2,7 +2,7 @@ use std::net::TcpStream;
 use std::net::TcpListener;
 use std::io::Write;
 
-///tcp 소켓 통신으로 서버로 입력된 코드 데이터를 보냅니다.
+///tcp 소켓 통신을 통해 채점 서버로 입력된 코드 데이터를 보냅니다.
 ///
 /// # Example
 /// ```
@@ -14,7 +14,7 @@ use std::io::Write;
 /// * *Can not flush data* : 서버에 데이터를 보낼 수 없습니다.
 /// * *Can not write code* : 서버에 보낼 코드를 작성할 수 없습니다.
 /// * *Can not flush code* : 서버에 코드를 보낼 수 없습니다.
-/// 
+///
 pub fn SendCode(questionNumber: i32, language: &str, code: &str)
 {
     let mut stream = TcpStream::connect("127.0.0.1:7878").expect("Can not connect judge server");
