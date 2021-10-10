@@ -1,6 +1,8 @@
 use std::net::TcpStream;
-use std::net::TcpListener;
-use std::io::Write;
+use std::io::{Write, BufReader, BufRead, Read};
+use std::io;
+use std::str;
+use crate::DataManager::GetBackendIP;
 
 ///tcp 소켓 통신을 통해 채점 서버로 입력된 코드 데이터를 보냅니다.
 ///
@@ -8,21 +10,43 @@ use std::io::Write;
 /// ```
 /// NetworkManager::SendCode(1,"C","#include <stdio.h>...");
 /// ```
-///# Panics
-/// * *Can not connect Judge Server* : 서버에 연결 할 수 없습니다.
-/// * *Can not write data* : 서버에 보낼 데이터를 작성할 수 없습니다.
-/// * *Can not flush data* : 서버에 데이터를 보낼 수 없습니다.
-/// * *Can not write code* : 서버에 보낼 코드를 작성할 수 없습니다.
-/// * *Can not flush code* : 서버에 코드를 보낼 수 없습니다.
 ///
-pub fn SendCode(questionNumber: i32, language: &str, code: &str)
+pub fn SendCode(questionNumber: i32, language: &str, code: &str) -> Result<i32, io::Error>
 {
-    let mut stream = TcpStream::connect("222.237.120.237:5000").unwrap();//expect("Can not connect judge server");
+    let ip_socket = format!("{}:5000",GetBackendIP());
+    let mut stream = TcpStream::connect(ip_socket)?;
 
     let data = format!("<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><question_number>{}</question_number><language>{}</language><code_size>{}</code_size></root>",questionNumber, language, code.len());
 
-    stream.write(data.as_bytes()).expect("Can not write data");
-    stream.flush().expect("Can not flush data");
-    stream.write(code.as_bytes()).expect("Can not write code");
-    stream.flush().expect("Can not flush code");
+    stream.write(data.as_bytes())?;
+    stream.flush()?;
+    stream.write(code.as_bytes())?;
+    stream.flush()?;
+
+    return Ok(0);
+}
+
+//TODO: panic!으로 주어지는 인코딩 에러 정보를 Result로 전환
+///tcp 소켓 통신을 통해 String 데이터를 수신합니다.
+///
+/// # Example
+/// ```
+/// let k = NetworkManager::TCPGetString(&mut reader).unwrap();
+/// ```
+///
+/// # Panics
+/// * **Can not read size of string** : tcp통신의 첫 줄에 주어지는 문자열의 사이즈를 읽을 수 없습니다. 백엔드의 문제일 가능성이 있습니다.
+/// * **Can not conver data to utf8** : 받은 데이터를 utf8로 인코딩 할 수 없습니다. 받은 데이터에 문제가 있을 가능성이 있습니다.
+///
+pub fn TCPGetString(reader: &mut BufReader<TcpStream>) -> Result<String, io::Error>
+{
+    let mut x = String::new();
+    reader.read_line(&mut x)?;
+    x.pop();
+    let mut y = x.parse::<usize>().expect("Can not read size of string");
+    let mut z: Vec<u8> = vec![0; y];
+    reader.read(&mut z)?;
+    let k = str::from_utf8(&mut z).expect("Can not convert data to utf8");
+
+    return Ok(String::from(k));
 }
