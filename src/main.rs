@@ -6,7 +6,8 @@ use rocket::http::RawStr;
 use rocket::response::{content, Redirect};
 use IROOJ_Frontend::*;
 use std::net::TcpStream;
-use std::io::Read;
+use std::io::{Read, BufReader, BufRead};
+use std::str;
 
 #[get("/")]
 fn index() -> content::Html<String> {
@@ -30,11 +31,17 @@ fn test_problem_code(code:Option<String>) -> content::Html<String> {
 #[get("/test/list")]
 fn list() -> content::Html<String> {
     let mut stream = TcpStream::connect("222.237.120.237:8081").unwrap();
-    println!("a");
+    let mut reader = BufReader::new(stream.try_clone().unwrap());
     let mut s = String::new();
-    println!("b");
-    let i = stream.read_to_string(&mut s).unwrap();
-    println!("{}",i);
+    let mut x = String::new();
+    reader.read_line(&mut x);
+    x.pop();
+    let mut y = x.parse::<usize>().unwrap();
+    let mut z:Vec<u8> = vec![0; y];
+    reader.read(&mut z);
+    println!("{:?}",z);
+    let k = str::from_utf8(&mut z).unwrap();
+    println!("{}",k);
     return DataManager::FileIO::ReadHTMLFile("HTML/test/list.html");
 }
 fn main() {
