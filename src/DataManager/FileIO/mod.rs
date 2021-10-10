@@ -7,7 +7,7 @@ use std::io;
 ///
 /// # Example
 /// ```
-/// let mut s = DataManager::FileIO::ReadHTMLFile("HTML/index/index.html");
+/// let mut s = DataManager::FileIO::ReadHTMLFile("HTML/index/index.html").unwrap();
 /// ```
 ///
 pub fn ReadFile(path: &str) -> Result<String, io::Error>
@@ -23,7 +23,7 @@ pub fn ReadFile(path: &str) -> Result<String, io::Error>
 ///
 /// # Example
 /// ```
-/// return ReadHTMLFile("HTML/index/index.html");
+/// return DataManager::FileIO::ReadHTMLFile("HTML/index/index.html").unwrap();
 /// ```
 ///
 pub fn ReadHTMLFile(path: &str) -> Result<content::Html<String>, io::Error>

@@ -8,7 +8,7 @@ use crate::DataManager::GetBackendIP;
 ///
 /// # Example
 /// ```
-/// NetworkManager::SendCode(1,"C","#include <stdio.h>...");
+/// NetworkManager::SendCode(1,"C","#include <stdio.h>...").unwrap();
 /// ```
 ///
 pub fn SendCode(questionNumber: i32, language: &str, code: &str) -> Result<i32, io::Error>
@@ -31,6 +31,7 @@ pub fn SendCode(questionNumber: i32, language: &str, code: &str) -> Result<i32, 
 ///
 /// # Example
 /// ```
+/// let mut reader = BufReader::new(tcpstream.try_clone().unwrap());
 /// let k = NetworkManager::TCPGetString(&mut reader).unwrap();
 /// ```
 ///
