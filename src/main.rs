@@ -8,7 +8,7 @@ use IROOJ_Frontend::*;
 
 #[get("/")]
 fn index() -> content::Html<String> {
-    let mut s = FileManager::ReadHTMLFile("HTML/index/index.html");
+    let mut s = DataManager::FileIO::ReadHTMLFile("HTML/index/index.html");
     return content::Html(s);
 }
 
@@ -16,14 +16,14 @@ fn index() -> content::Html<String> {
 fn test_problem_code(code:Option<String>) -> content::Html<String> {
     if code.is_none()
     {
-        let mut s = FileManager::ReadHTMLFile("HTML/test/problem.html");
+        let mut s = DataManager::FileIO::ReadHTMLFile("HTML/test/problem.html");
         return content::Html(s);
     }
     else
     {
-        let codestr = if let Some(String) = code {String};
+        let mut codestr = match code {Some(s)=>s, _=>String::from("error")};
         NetworkManager::SendCode(1,"C",&codestr[..]);
-        let mut s = FileManager::ReadHTMLFile("HTML/index/index.html");
+        let mut s = DataManager::FileIO::ReadHTMLFile("HTML/index/index.html");
         return content::Html(s);
     }
 }

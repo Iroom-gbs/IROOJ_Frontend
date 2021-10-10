@@ -1,2 +1,2 @@
-pub mod FileManager;
+pub mod DataManager;
 pub mod NetworkManager;
