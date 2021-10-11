@@ -2,7 +2,8 @@ use std::net::TcpStream;
 use std::io::{Write, BufReader, BufRead, Read};
 use std::io;
 use std::str;
-use crate::DataManager::GetBackendIP;
+
+use crate::DataManager;
 
 ///tcp 소켓 통신을 통해 채점 서버로 입력된 코드 데이터를 보냅니다.
 ///
@@ -13,7 +14,7 @@ use crate::DataManager::GetBackendIP;
 ///
 pub fn SendCode(questionNumber: i32, language: &str, code: &str) -> Result<i32, io::Error>
 {
-    let ip_socket = format!("{}:5000",GetBackendIP());
+    let ip_socket = DataManager::GetBackendSocket(5000);
     let mut stream = TcpStream::connect(ip_socket)?;
 
     let data = format!("<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><question_number>{}</question_number><language>{}</language><code_size>{}</code_size></root>",questionNumber, language, code.len());
@@ -44,7 +45,7 @@ pub fn TCPGetString(reader: &mut BufReader<TcpStream>) -> Result<String, io::Err
     let mut x = String::new();
     reader.read_line(&mut x)?;
     x.pop();
-    let mut y = x.parse::<usize>().expect("Can not read size of string");
+    let y = x.parse::<usize>().expect("Can not read size of string");
     let mut z: Vec<u8> = vec![0; y];
     reader.read(&mut z)?;
     let k = str::from_utf8(&mut z).expect("Can not convert data to utf8");

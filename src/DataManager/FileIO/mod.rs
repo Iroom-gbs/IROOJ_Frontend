@@ -7,7 +7,7 @@ use std::io;
 ///
 /// # Example
 /// ```
-/// let mut s = DataManager::FileIO::ReadHTMLFile("HTML/index/index.html").unwrap();
+/// let mut s = DataManager::FileIO::ReadFile("HTML/index/index.html").unwrap();
 /// ```
 ///
 pub fn ReadFile(path: &str) -> Result<String, io::Error>
